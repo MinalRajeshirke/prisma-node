@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id Int    @id @default(autoincrement())
+  name    String
+  email   String @unique
+
+  Cart     Cart[]
+  Wishlist Wishlist[]
+  Order    Order[]
+}
+
+// user cart = one to many
+model Cart {
+  cart_id      Int    @id @default(autoincrement())
+  quantity     Int //  intends to purchase 
+  product_name String
+  user         User   @relation(fields: [userId], references: [user_id])
+  userId       Int
+}
+
+// user wishlist = one to many
+model Wishlist {
+  wishlist_id  Int    @id @default(autoincrement())
+  name         String
+  product_name String
+  user         User   @relation(fields: [userId], references: [user_id])
+  userId       Int
+}
+
+// user order = one to many
+
+model Order {
+  order_id       Int       @id @default(autoincrement())
+  quantity       Int // actually  purchased
+  price          Int
+  product_name   String
+  payment_method String
+  user           User      @relation(fields: [userId], references: [user_id])
+  userId         Int
+  Shipping       Shipping?
+
+  //Payment      Payment[]
+}
+
+// order shipping one to one
+
+model Shipping {
+  shipping_id Int    @id @default(autoincrement())
+  address     String
+  city        String
+  state       String
+  pin_code    Int
+  // order          Order? 
+  order       Order  @relation(fields: [orderId], references: [order_id])
+  orderId     Int    @unique
+}
+
+// model Payment {
+//   payment_id     Int       @id @default(autoincrement())
+//   payment_date   DateTime
+//   payment_method String
+//   amount          Float
+//   order          Order     @relation(fields: [orderId], references: [order_id])
+//   orderId        Int
+// }
+
+//  npm i --save-dev prisma@latest                       │
+// │    npm i @prisma/client@latest
