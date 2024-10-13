@@ -75,5 +75,4 @@ model Shipping {
 //   orderId        Int
 // }
 
-//  npm i --save-dev prisma@latest                       │
-// │    npm i @prisma/client@latest
+
